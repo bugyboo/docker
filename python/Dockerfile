@@ -19,6 +19,9 @@ RUN update-ca-certificates
 # Install Poetry for dependency management
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
+# Install Poetry 
+RUN pip install poetry
+
 # Install PyInstaller for creating executables
 RUN pip install pyinstaller
 
