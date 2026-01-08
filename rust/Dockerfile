@@ -10,11 +10,22 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     libssl-dev \
     ca-certificates \
+    mingw-w64 \
+    gcc-mingw-w64-x86-64 \
+    g++-mingw-w64-x86-64 \
+    binutils-mingw-w64-x86-64 \    
     && rm -rf /var/lib/apt/lists/*
 
 # Copy certificates for secure connections
 COPY *.crt /usr/local/share/ca-certificates/ksu-certificates.crt
 RUN update-ca-certificates
+
+# Set up a non-root user for development
+RUN useradd -m -u 1000 -s /bin/bash rustdev \
+    && chown -R rustdev:rustdev /workspace
+
+# Switch to the development user
+USER rustdev
 
 # Install useful Rust tools for development
 RUN cargo install \
@@ -23,13 +34,6 @@ RUN cargo install \
 
 # Create a working directory
 WORKDIR /workspace
-
-# Set up a non-root user for development
-RUN useradd -m -u 1000 -s /bin/bash rustdev \
-    && chown -R rustdev:rustdev /workspace
-
-# Switch to the development user
-USER rustdev
 
 # Set environment variables
 ENV CARGO_HOME=/home/rustdev/.cargo
