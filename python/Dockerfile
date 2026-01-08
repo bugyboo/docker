@@ -14,16 +14,11 @@ RUN apt-get update && apt-get install -y \
 
 # Copy ca-certificates for secure connections
 COPY *.crt /usr/local/share/ca-certificates/ksu-certificates.crt
-RUN update-ca-certificates
+RUN update-ca-certificates 
 
-# Install Poetry for dependency management
-RUN curl -sSL https://install.python-poetry.org | python3 -
-
-# Install Poetry 
-RUN pip install poetry
-
-# Install PyInstaller for creating executables
-RUN pip install pyinstaller
+# Install Poetry and PyInstaller for creating standalone executables 
+RUN pip install pyinstaller \
+    && pip install poetry
 
 # Create a working directory
 WORKDIR /workspace
@@ -36,7 +31,7 @@ RUN useradd -m -u 1000 -s /bin/bash pythondev \
 USER pythondev
 
 # Set environment variables
-ENV PATH="/home/pythondev/.local/bin:$PATH"
+ENV PATH="/home/pythondev/.local/bin:$PATH"  
 
 # Default command opens a bash shell
 CMD ["/bin/bash"]

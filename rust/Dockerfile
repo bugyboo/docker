@@ -20,13 +20,6 @@ RUN apt-get update && apt-get install -y \
 COPY *.crt /usr/local/share/ca-certificates/ksu-certificates.crt
 RUN update-ca-certificates
 
-# Set up a non-root user for development
-RUN useradd -m -u 1000 -s /bin/bash rustdev \
-    && chown -R rustdev:rustdev /workspace
-
-# Switch to the development user
-USER rustdev
-
 # Install useful Rust tools for development
 RUN cargo install \
     cargo-watch \
@@ -35,9 +28,20 @@ RUN cargo install \
 # Create a working directory
 WORKDIR /workspace
 
+# Set up a non-root user for development
+RUN useradd -m -u 1000 -s /bin/bash rustdev \
+    && chown -R rustdev:rustdev /workspace
+
+# Switch to the development user
+USER rustdev    
+
 # Set environment variables
 ENV CARGO_HOME=/home/rustdev/.cargo
 ENV RUSTUP_HOME=/home/rustdev/.rustup
+
+# Install default Rust toolchain components
+RUN rustup default stable \
+    && rustup component add rustfmt clippy
 
 # Default command opens a bash shell
 CMD ["/bin/bash"]
