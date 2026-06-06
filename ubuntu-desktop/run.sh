@@ -3,4 +3,4 @@ docker run -it --name ubuntu-desktop \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     --device /dev/dri \
     --privileged \
-    ubuntu-desktop:22.04
+    ubuntu-desktop
